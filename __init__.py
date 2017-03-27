@@ -12,14 +12,17 @@ class dbHandle:
             print(targetDir+" exists, proceeding in place.")
         self.root = os.path.abspath(targetDir)
         self.baseVars = vars().keys()
+
     def dump(self,Variables):
         os.chdir(self.root)
-        print([k for k in Variables.keys() if not(k in list(self.baseVars)+["self"]) and not(k[0:2]=="__" and k[-2:]=="__")])
+        #print([k for k in Variables.keys() if not(k in list(self.baseVars)+["self"]) and not(k[0:2]=="__" and k[-2:]=="__")])
         for i in [k for k in Variables.keys() if not(k in list(self.baseVars)+["self"]) and not(k[0:2]=="__" and k[-2:]=="__")]:
             print(i)
             self.write(Variables[i], str(i) + "#" + str(type(Variables[i])).split("'")[1])
+
     def findAll(self):
         return(self.read(self.root))
+
     def read(self,targetPath):
         print("reading")
         print(targetPath)
@@ -31,7 +34,7 @@ class dbHandle:
             # else:
             os.chdir(targetPath)
             ret = {}
-            for k in [os.path.abspath(i) for i in os.listdir(targetPath) if not (os.path.abspath(i).startswith("."))]:
+            for k in [os.path.abspath(i) for i in os.listdir(targetPath) if not(os.path.basename(i).startswith("."))]:
                 print(k)
                 importantPathParts = os.path.basename(k).split("#")
                 ret[importantPathParts[0]] = self.read(k)
@@ -58,6 +61,7 @@ class dbHandle:
                 # Objects in a list will be stored in a hidden folder.
         os.chdir(startPath)
         return (ret)
+
     def write(self,obj, targetPath):
         startPath = os.path.abspath(os.getcwd())
         if (type(obj) == dict):
@@ -100,9 +104,39 @@ class dbHandle:
                 except Exception as e:
                     print(e)
         os.chdir(startPath)
+
     def reVar(self,obj):
         for k in[i for i in obj if i != None]:
             if(type(obj[k])==list):
-                exec("global " + k[1:] + "\n" + k + "=" + obj[k])
+                exec("global " + str(k)[1:] + "\n" + str(k)[1:] + "=" + str(obj[k]))
+            elif(obj[k]==None):
+                print("Not assigning None values to "+str(k))
+            elif(type(obj[k])==str):
+                exec("global " + str(k) + "\n" + str(k) + "=\"\"\"" + str(obj[k])+"\"\"\"")
             else:
-                exec("global " + k + "\n" + k + "=" + obj[k])
+                exec("global " + str(k) + "\n" + str(k) + "=" + str(obj[k]))
+            print("global " + str(k) + "\n" + str(k) + "=" + str(obj[k]))
+
+    def setCheckpointFunction(self,f):
+        self.checkpointFunction = f
+
+    def checkpoint(self,v):
+        self.checkpointFunction(v)
+
+    def setCheckpointRetrieveFunction(self,f):
+        self.checkpointRetrieveFunction = f
+
+    def retrieveCheckpoint(self,checkpointPath = None):
+        self.checkpointRetrieveFunction()
+
+    def lilBobbyTables(self):
+        if(os.path.basename(self.root)[0]=="."):
+            for root, dirs, files in os.walk(self.root, topdown=False):
+                for name in files:
+                    os.remove(os.path.join(root, name))
+                for name in dirs:
+                    os.rmdir(os.path.join(root, name))
+        try:
+            os.mkdir(self.root)
+        except:
+            print(self.root+" exists, proceeding in place.")
