@@ -18,22 +18,21 @@ def myCheckPointRetrieveFunction(myFSaaDB=myFSaaDB):
 myFSaaDB.setCheckpointFunction(myCheckpoint)
 myFSaaDB.setCheckpointRetrieveFunction(myCheckPointRetrieveFunction)
 # initialize our program variables.
-global primes
 primes = [2]
-global check
 check = 3
 #Override variables with values from the Disk
 myFSaaDB.retrieveCheckpoint()
 #Computation
 print(primes)
 print(check)
-while(len(primes)<341):
+while(len(primes)<1000000):
     if not(0 in [check % k for k in primes]):
         primes.append(check)
     check+=2
     #Once and a while use the checkpoint.
-    if(len(primes)%100 == 0):
+    if(check%1993 == 0):
         myFSaaDB.checkpoint(vars())
         if("n" in input("continue?")):
             break
+
 print("Complete!")
