@@ -23,5 +23,10 @@
 	-> Works derived from this project may modify their title iff
 	the new title includes the title of this project.
 
+	-> The terms of this license do not supersede the terms of any
+	referenced work, dependancies, associated works, or hardware.
+
+	-> All terms are to be observed where applicable by law.
+
 </license>
 
