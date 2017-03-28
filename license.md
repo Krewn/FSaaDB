@@ -11,7 +11,7 @@
 
 	-> This project is provided as is without warranty or guarantees.
 
-	-> The Author(s) are not liable for any damages cased by or 
+	-> The Author(s) are not liable for any damages caused by or
 	incurred while using this project or any derived projects.
 
 	-> Any distribution of works derived from this project must be
@@ -20,7 +20,7 @@
 	modified project and without other changes not permitted by
 	this license.
 
-	-> Works derived from this project may modify their title iff
+	-> Works derived from this project may modify their title if
 	the new title includes the title of this project.
 
 	-> The terms of this license do not supersede the terms of any
