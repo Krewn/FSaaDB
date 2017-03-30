@@ -9,33 +9,33 @@ class dbHandle:
         try:
             os.mkdir(targetDir)
         except:
-            print(targetDir+" exists, proceeding in place.")
+            printish=(targetDir+" exists, proceeding in place.")
         self.root = os.path.abspath(targetDir)
         self.baseVars = vars().keys()
 
     def dump(self,Variables):
         os.chdir(self.root)
-        #print([k for k in Variables.keys() if not(k in list(self.baseVars)+["self"]) and not(k[0:2]=="__" and k[-2:]=="__")])
+        #printish=([k for k in Variables.keys() if not(k in list(self.baseVars)+["self"]) and not(k[0:2]=="__" and k[-2:]=="__")])
         for i in [k for k in Variables.keys() if not(k in list(self.baseVars)+["self"]) and not(k[0:2]=="__" and k[-2:]=="__")]:
-            print(i)
+            #printish=(i)
             self.write(Variables[i], str(i) + "#" + str(type(Variables[i])).split("'")[1])
 
     def findAll(self):
         return(self.read(self.root))
 
     def read(self,targetPath):
-        print("reading")
-        print(targetPath)
+        #printish=("reading")
+        #printish=(targetPath)
         startPath = os.path.abspath(os.getcwd())
         if (os.path.isdir(targetPath)):
             #if(os.path.basename(targetPath)[0] == "."):
-            #    print("please don't name your variables starting with a .")
+            #    printish=("please don't name your variables starting with a .")
             #    ret = None
             # else:
             os.chdir(targetPath)
             ret = {}
             for k in [os.path.abspath(i) for i in os.listdir(targetPath) if not(os.path.basename(i).startswith("."))]:
-                print(k)
+                #printish=(k)
                 importantPathParts = os.path.basename(k).split("#")
                 ret[importantPathParts[0]] = self.read(k)
         else:
@@ -68,7 +68,7 @@ class dbHandle:
             try:
                 os.mkdir(targetPath)
             except:
-                print(targetPath + " already exists, write operation continues in place.")
+                printish=(targetPath + " already exists, write operation continues in place.")
             os.chdir(targetPath)
             for k in obj:
                 self.write(obj[k], os.path.abspath(k + "#" + str(type(obj[k])).split("'")[1]))
@@ -87,7 +87,7 @@ class dbHandle:
                     os.mkdir(
                         os.path.join(os.path.abspath(os.path.join(targetPath, os.pardir)), "." + os.path.basename(targetPath)))
                 except:
-                    print(os.path.join(os.path.abspath(os.path.join(targetPath, os.pardir)),
+                    printish=(os.path.join(os.path.abspath(os.path.join(targetPath, os.pardir)),
                                        "." + os.path.basename(targetPath)) + " already exists, write operation continues in place.")
                 strRep = ""
                 for n, k in enumerate(obj):
@@ -102,20 +102,29 @@ class dbHandle:
                 try:
                     pickle.dump(obj, open(targetPath, "wb"))
                 except Exception as e:
-                    print(e)
+                    printish=(e)
         os.chdir(startPath)
+
+    def update(self,varName,var):
+        self.write(var,self.FSaaDBpFunc(varName,var))
+
+    def retrieve(self,varName,var):
+        return(self.read(self.FSaaDBpFunc(varName,var)))
+
+    def FSaaDBpFunc(self, varName, var):
+        return(os.pat.join(self.root, varName + "#" + str(type(var)).split("'")[1]))
 
     def reVar(self,obj):
         for k in[i for i in obj if i != None]:
             if(type(obj[k])==list):
                 exec("global " + str(k)[1:] + "\n" + str(k)[1:] + "=" + str(obj[k]))
             elif(obj[k]==None):
-                print("Not assigning None values to "+str(k))
+                printish=("Not assigning None values to "+str(k))
             elif(type(obj[k])==str):
                 exec("global " + str(k) + "\n" + str(k) + "=\"\"\"" + str(obj[k])+"\"\"\"")
             else:
                 exec("global " + str(k) + "\n" + str(k) + "=" + str(obj[k]))
-            print("global " + str(k) + "\n" + str(k) + "=" + str(obj[k]))
+            printish=("global " + str(k) + "\n" + str(k) + "=" + str(obj[k]))
 
     def setCheckpointFunction(self,f):
         self.checkpointFunction = f
@@ -139,4 +148,4 @@ class dbHandle:
         try:
             os.mkdir(self.root)
         except:
-            print(self.root+" exists, proceeding in place.")
+            printish=(self.root+" exists, proceeding in place.")

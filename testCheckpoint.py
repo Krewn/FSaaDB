@@ -25,7 +25,7 @@ myFSaaDB.retrieveCheckpoint()
 #Computation
 print(primes)
 print(check)
-while(len(primes)<1000000):
+while(len(primes)<=9000):
     if not(0 in [check % k for k in primes]):
         primes.append(check)
     check+=2
